@@ -2,6 +2,9 @@
 
 Script para realizar acessos via EC2 Instance Connect Endpoint `eice` com fuzzy finder `fzf`.
 
+![info-video](docs/cli-sshctx.gif)
+
+
 ## Pré-requisitos
 
 🐍 [Python 3.x](https://www.python.org/downloads/)
