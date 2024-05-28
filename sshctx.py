@@ -12,13 +12,14 @@ def get_all_instances():
     for page in paginator.paginate():
         for reservation in page['Reservations']:
             for instance in reservation['Instances']:
-                name = next((tag['Value'] for tag in instance.get('Tags', []) if tag['Key'] == 'Name'), 'N/A')
-                instance_info = {
-                    'Name': name,
-                    'InstanceId': instance['InstanceId'],
-                    'PrivateIpAddress': instance.get('PrivateIpAddress', 'N/A').ljust(15)
-                }
-                instances.append(instance_info)
+                if instance['State']['Name'] == 'running':
+                    name = next((tag['Value'] for tag in instance.get('Tags', []) if tag['Key'] == 'Name'), 'N/A')
+                    instance_info = {
+                        'Name': name,
+                        'InstanceId': instance['InstanceId'],
+                        'PrivateIpAddress': instance.get('PrivateIpAddress', 'N/A').ljust(15)
+                    }
+                    instances.append(instance_info)
     return instances
 
 # Função para selecionar uma instância usando fzf
