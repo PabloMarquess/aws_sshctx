@@ -48,10 +48,22 @@ def select_user():
     selected_user = fzf_output.decode('utf-8').strip()
     return selected_user
 
+# Função para obter o IP privado da instância
+def get_instance_private_ip(instance_id):
+    response = ec2.describe_instances(InstanceIds=[instance_id])
+    for reservation in response['Reservations']:
+        for instance in reservation['Instances']:
+            return instance.get('PrivateIpAddress', 'N/A')
+    return 'N/A'
+
 # Função para tentar a conexão com um usuário específico
 def try_connect(instance_id, os_user):
     if instance_id:
-        command = f"aws ec2-instance-connect ssh --instance-id {instance_id} --os-user {os_user}"
+        instance_ip = get_instance_private_ip(instance_id)
+        if instance_ip == 'N/A':
+            print(f"Não foi possível obter o IP privado para a instância {instance_id}")
+            return False
+        command = f"aws ec2-instance-connect ssh --instance-id {instance_id} --instance-ip {instance_ip} --os-user {os_user} --connection-type eice"
         result = subprocess.run(command, shell=True)
         return result.returncode == 0
     else:
@@ -86,8 +98,8 @@ else:
     # Permite a seleção do usuário
     selected_user = select_user()
 
+print(f"conectando...")
+
 # Tenta a conexão com o usuário selecionado
-if try_connect(selected_instance_id, selected_user):
-    print(f"Conexão bem-sucedida com o usuário '{selected_user}' para a instância {selected_instance_id}")
-else:
+if not try_connect(selected_instance_id, selected_user):
     print(f"Falha ao conectar à instância {selected_instance_id} com o usuário '{selected_user}'. Usuário inválido.")
