@@ -1,6 +1,6 @@
-# EC2 Connect via EICE
+# EC2 Connect via EICE (sshctx tool)
 
-Script para realizar acessos via EC2 Instance Connect Endpoint `eice` com fuzzy finder `fzf`.
+sshctx tool é um script criado para realizar acessos via EC2 Instance Connect Endpoint `eice` com fuzzy finder `fzf`.
 
 ![info-video](docs/cli-sshctx.gif)
 
